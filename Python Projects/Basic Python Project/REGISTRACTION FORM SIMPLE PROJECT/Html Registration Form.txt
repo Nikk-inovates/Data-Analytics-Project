@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Form</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #74ebd5, #acb6e5);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .heading {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: black;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .container {
+            max-width: 800px;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+        label, legend {
+            color: black;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        .form-control {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid #ccc;
+            color: black;
+        }
+        .form-control::placeholder {
+            color: rgba(0, 0, 0, 0.6);
+        }
+        .btn-primary {
+            background-color: #ff6f61;
+            border: none;
+            transition: 0.3s;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: white;
+            width: 100%;
+        }
+        .btn-primary:hover {
+            background-color: #ff3b3b;
+            transform: scale(1.05);
+        }
+        footer {
+            text-align: center;
+            margin-top: 15px;
+            color: black;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+<h2 class="heading">Registration Form</h2> <!-- Heading moved out of the box -->
+
+<div class="container">
+    <form id="registrationForm">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="firstName">First Name</label>
+                    <input type="text" class="form-control" id="firstName" placeholder="Enter first name" required>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="lastName">Last Name</label>
+                    <input type="text" class="form-control" id="lastName" placeholder="Enter last name" required>
+                </div>
+            </div>
+        </div>
+
+        <fieldset class="form-group">
+            <legend>Gender</legend>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="gender" id="male" value="Male" required>
+                <label class="form-check-label" for="male">Male</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="gender" id="female" value="Female" required>
+                <label class="form-check-label" for="female">Female</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="gender" id="others" value="Others" required>
+                <label class="form-check-label" for="others">Others</label>
+            </div>
+        </fieldset>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" id="email" placeholder="Enter email" required>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" class="form-control" id="phone" placeholder="Enter phone number" required>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password (Min 8 characters)</label>
+            <input type="password" class="form-control" id="password" placeholder="Password" minlength="8" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Register</button>
+    </form>
+    
+    <footer>
+        <p>© Nikhil Panchal</p>
+    </footer>
+</div>
+
+<script>
+    document.querySelector("form").addEventListener("submit", async function(event) {
+        event.preventDefault();  // Prevent form from refreshing the page
+
+        // Get form values
+        let formData = {
+            firstName: document.getElementById("firstName").value,
+            lastName: document.getElementById("lastName").value,
+            gender: document.querySelector('input[name="gender"]:checked').value,
+            email: document.getElementById("email").value,
+            password: document.getElementById("password").value,
+            phone: document.getElementById("phone").value
+        };
+
+        try {
+            // Send data to Flask backend
+            let response = await fetch("http://127.0.0.1:5000/register", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(formData)
+            });
+
+            let result = await response.json();
+            alert(result.message || result.error);
+
+            // Reset form after successful submission
+            if (response.ok) {
+                document.getElementById("registrationForm").reset();
+            }
+
+        } catch (error) {
+            console.error("Error:", error);
+            alert("Something went wrong. Please try again.");
+        }
+    });
+</script>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>
